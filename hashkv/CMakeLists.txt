@@ -29,9 +29,12 @@ set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
+
 include_directories(src  lib/threadpool  lib/leveldb/include  lib/HdrHistogram_c-0.9.4/src)
-find_library(LEVELDB leveldb lib/leveldb/out-shared)
-find_library(HISTOGRAM hdr_histogram lib/HdrHistogram_c-0.9.4/build/src)
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/HdrHistogram_c-0.9.4)
+add_subdirectory(${PROJECT_SOURCE_DIR}/lib/leveldb)
+# find_library(LEVELDB leveldb lib/leveldb-1.18/out-shared)
+# find_library(HISTOGRAM hdr_histogram lib/HdrHistogram_c-0.9.4/build/src)
 
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 find_package(Threads)
@@ -43,7 +46,8 @@ aux_source_directory(src/util file_util)
 
 add_executable(hashkv_test src/tests/hashkv_test.cc ${file_src} ${file_ds} ${file_util})
 
-target_link_libraries(hashkv_test ${LEVELDB} ${HISTOGRAM})
+# target_link_libraries(hashkv_test ${LEVELDB} ${HISTOGRAM})
+target_link_libraries(hashkv_test leveldb hdr_histogram)
 
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries (hashkv_test ${Boost_LIBRARIES})
