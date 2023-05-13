@@ -2,6 +2,7 @@
 
 #include <chrono>
 #include <ctime>
+#include <iostream>
 
 #include "../statsRecorder.hh"
 #include "define.hh"

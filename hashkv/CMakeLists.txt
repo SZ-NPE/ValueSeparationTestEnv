@@ -31,7 +31,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 include_directories(src  lib/threadpool  lib/leveldb/include  lib/HdrHistogram_c-0.9.4/src)
 find_library(LEVELDB leveldb lib/leveldb/out-shared)
-find_library(HISTOGRAM hdr_histogram lib/HdrHistogram_c-0.9.4/src)
+find_library(HISTOGRAM hdr_histogram lib/HdrHistogram_c-0.9.4/build/src)
 
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 find_package(Threads)

@@ -3,7 +3,7 @@ set -x
 export LC_ALL=C
 export SCRIPT_HOME=$(pwd)
 export ROCKSDB_HOME=$(pwd)/../rocksdb
-export HASHKV_HOME=$(pwd)/../HashKV
+export HASHKV_HOME=$(pwd)/../hashkv
 export DIFFKV_HOME=$(pwd)/../diffkv
 export TERARKDB_HOME=$(pwd)/../terarkdb
 
@@ -82,11 +82,14 @@ function rocksdb() {
 
 #hashkv
 function hashkv() {
-    export LD_LIBRARY_PATH="$HASHKV_HOME/lib/leveldb/out-shared:$HASHKV_HOME/lib/HdrHistogram_c-0.9.4/src:$LD_LIBRARY_PATH"
-    cd ${HASHKV_HOME}/bin && mkdir leveldb && mkdir data_dir && rm -f data_dir/* leveldb/*
-    cp hashkv_sample_config.ini config.ini
-    ./hashkv_test data_dir 100000
-    cd ${SCRIPT_HOME}
+    rm -rf ${db_dir}/*
+    rm ${wal_dir}/*
+    sudo -S fstrim ${db_dir}
+    sudo -S fstrim ${wal_dir}
+    sync
+    echo 3 >/proc/sys/vm/drop_caches
+    cp ${HASHKV_HOME}/bin/hashkv_sample_config.ini ${HASHKV_HOME}/build/config.ini
+    cd ${HASHKV_HOME}/build && ./hashkv_test ${db_dir} 100000
 }
 # diffkv
 function diffkv() {
@@ -119,4 +122,4 @@ function terarkdb() {
         --${ycsb_params} 
 }
 
-terarkdb
+hashkv
