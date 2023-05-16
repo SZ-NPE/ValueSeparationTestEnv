@@ -22,7 +22,7 @@ make_config.mk
 *.vcxproj
 *.vcxproj.filters
 *.sln
-*.cmake
+# *.cmake
 CMakeCache.txt
 CMakeFiles/
 build/
