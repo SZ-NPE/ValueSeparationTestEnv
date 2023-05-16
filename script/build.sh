@@ -12,13 +12,9 @@ export TERARKDB_HOME=$(pwd)/../terarkdb
 mkdir ${ROCKSDB_HOME}/build
 cd ${ROCKSDB_HOME}/build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j32
 
-# hashkv
-# mkdir ${HASHKV_HOME}/lib/HdrHistogram_c-0.9.4/build
-# cd ${HASHKV_HOME}/lib/HdrHistogram_c-0.9.4/build && cmake .. && make -j32
-# chmod 777 ${HASHKV_HOME}/lib/leveldb-1.18/build_detect_platform
-# cd ${HASHKV_HOME}/lib/leveldb-1.18 &&  make -j32 
-mkdir ${HASHKV_HOME}/build
-cd ${HASHKV_HOME}/build && cmake .. && make -j32
+# # hashkv
+# mkdir ${HASHKV_HOME}/build
+# cd ${HASHKV_HOME}/build && cmake .. && make -j32
 
 # diffkv
 cd ${DIFFKV_HOME}/dep/rocksdb && make static_lib -j32

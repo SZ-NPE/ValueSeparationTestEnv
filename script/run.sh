@@ -7,7 +7,7 @@ export HASHKV_HOME=$(pwd)/../hashkv
 export DIFFKV_HOME=$(pwd)/../diffkv
 export TERARKDB_HOME=$(pwd)/../terarkdb
 
-num=1000000
+num=100000
 duration=0
 threads=1
 max_background_jobs=1
@@ -88,8 +88,13 @@ function hashkv() {
     sudo -S fstrim ${wal_dir}
     sync
     echo 3 >/proc/sys/vm/drop_caches
-    cp ${HASHKV_HOME}/bin/hashkv_sample_config.ini ${HASHKV_HOME}/build/config.ini
-    cd ${HASHKV_HOME}/build && ./hashkv_test ${db_dir} 100000
+    # cp ${HASHKV_HOME}/bin/hashkv_sample_config.ini ${HASHKV_HOME}/build/config.ini
+    # cd ${HASHKV_HOME}/build && ./hashkv_test ${db_dir} 100000
+    rm -rf ${DIFFKV_HOME}/build/leveldb/*
+    ${HASHKV_HOME}/build/kv_bench \
+    --num=10000 \
+    --db=${db_dir} \
+    --benchmarks=fillrandom,stats 
 }
 # diffkv
 function diffkv() {
@@ -122,4 +127,3 @@ function terarkdb() {
         --${ycsb_params} 
 }
 
-hashkv
