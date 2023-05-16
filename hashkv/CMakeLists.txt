@@ -7,13 +7,13 @@ project(hashkv)
 
 # Specified the language standard
 set(CMAKE_C_STANDARD 99)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 ##--------------------- Compile Options ------------------------------------##
 # Configure compile options
 add_compile_options(-Wall) # -Wextra -pedantic -Wshadow -Wstrict-prototypes --all-warnings -Wconversion # -Werror
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pipe -std=c99")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -std=c++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pipe -std=c++17")
 
 # Set build type
 # set(CMAKE_BUILD_TYPE Debug)  # Use `cmake -DCMAKE_BUILD_TYPE=Debug` more better
@@ -28,16 +28,18 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O2")
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
+add_definitions(-DGFLAGS=1)
 
 
-include_directories(src  lib/threadpool  lib/leveldb/include  lib/HdrHistogram_c-0.9.4/src)
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/HdrHistogram_c-0.9.4)
 add_subdirectory(${PROJECT_SOURCE_DIR}/lib/leveldb)
+include_directories(src  lib/threadpool  lib/leveldb/include  lib/HdrHistogram_c-0.9.4/src)
 # find_library(LEVELDB leveldb lib/leveldb-1.18/out-shared)
 # find_library(HISTOGRAM hdr_histogram lib/HdrHistogram_c-0.9.4/build/src)
 
 find_package(Boost REQUIRED COMPONENTS system filesystem thread)
 find_package(Threads)
+find_package(gflags REQUIRED)
 
 
 aux_source_directory(src file_src)
@@ -45,10 +47,17 @@ aux_source_directory(src/ds file_ds)
 aux_source_directory(src/util file_util)
 
 add_executable(hashkv_test src/tests/hashkv_test.cc ${file_src} ${file_ds} ${file_util})
+add_executable(kv_bench src/tests/kv_bench.cc src/tests/kv_bench_tool.cc ${file_src} ${file_ds} ${file_util})
+
 
 # target_link_libraries(hashkv_test ${LEVELDB} ${HISTOGRAM})
 target_link_libraries(hashkv_test leveldb hdr_histogram)
+target_link_libraries(kv_bench leveldb hdr_histogram)
 
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries (hashkv_test ${Boost_LIBRARIES})
 target_link_libraries(hashkv_test ${CMAKE_THREAD_LIBS_INIT})
+
+target_link_libraries (kv_bench ${Boost_LIBRARIES})
+target_link_libraries(kv_bench ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(kv_bench gflags)

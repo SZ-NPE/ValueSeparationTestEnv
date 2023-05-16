@@ -58,7 +58,7 @@ static inline void* buf_calloc (size_t s, unsigned int unit) {
 
 // keyManager (in general)
 //#define KEY_SIZE    (16)
-#define KEY_SIZE    (24)
+#define KEY_SIZE    (16)
 
 // valueManager
 #define MAX_CP_NUM  (128)
